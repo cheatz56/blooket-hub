@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spooky Moth Chroma Injector</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0d0d1a;
+            color: #ffffff;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            max-width: 550px;
+            margin: auto;
+            background: #16162a;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(230, 100, 250, 0.2);
+            border: 1px solid #e664fa;
+        }
+        h1 { 
+            color: #e664fa; 
+            text-shadow: 0 0 10px rgba(230, 100, 250, 0.5);
+        }
+        .spooky-box {
+            background: #222244;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 10px;
+            font-size: 1.1em;
+        }
+        .highlight {
+            color: #ffcc00;
+            font-weight: bold;
+        }
+        button {
+            background-color: #e664fa;
+            color: #ffffff;
+            border: none;
+            padding: 12px 30px;
+            font-weight: bold;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(230, 100, 250, 0.3);
+        }
+        button:hover { 
+            background-color: #c840dc; 
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Spooky Moth Injector 🎃</h1>
+    <div class="spooky-box">
+        <p>This script will client-side unlock the <span class="highlight">Spooky Moth Chroma</span> so you can select and play with it in game lobbies.</p>
+        <p><small>Note: This is visual/temporary and resets when you refresh the page.</small></p>
+    </div>
+    
+    <button onclick="copyMothScript()">Copy Spooky Moth Script</button>
+</div>
+
+<script>
+function copyMothScript() {
+    // This payload locates the React state holding the player's blooks and forces the "Spooky Moth" to be true (unlocked)
+    const scriptCode = `(function() {
+        try {
+            const webpack = window.webpackJsonp;
+            const reactElement = Object.values(document.querySelector('#app') || document.querySelector('#root'))[0];
+            let stateNode = reactElement.child.stateNode;
+            
+            // Look for the user state containing unlocked blooks
+            if (stateNode && stateNode.state && stateNode.state.blooks) {
+                stateNode.setState({
+                    blooks: { ...stateNode.state.blooks, "Spooky Moth": 1 }
+                });
+                alert("Spooky Moth Chroma successfully injected into your dashboard!");
+            } else {
+                // Alternative injection style via React Fiber lookup
+                const findBlooksState = (node) => {
+                    if (!node) return null;
+                    if (node.memoizedState && node.memoizedState.blooks) return node;
+                    return findBlooksState(node.child) || findBlooksState(node.sibling);
+                };
+                
+                let fiberRoot = reactElement._reactRootContainer?._internalRoot?.current || reactElement;
+                let target = findBlooksState(fiberRoot);
+                
+                if (target) {
+                    target.memoizedState.blooks["Spooky Moth"] = 1;
+                    alert("Spooky Moth Chroma successfully injected! Check your blooks.");
+                } else {
+                    alert("Could not find Blooket data. Make sure you run this on the /blooks or /play/lobby page!");
+                }
+            }
+        } catch (e) {
+            alert("Error running injector. Ensure you are logged into Blooket and on the right page.");
+        }
+    })();`;
+
+    navigator.clipboard.writeText(scriptCode).then(() => {
+        alert('Spooky Moth script copied! Go to your Blooket page, open Inspect Element (F12), click Console, paste, and press Enter.');
+    }).catch(err => {
+        console.error('Could not copy text: ', err);
+    });
+}
+</script>
+
+</body>
+</html>
